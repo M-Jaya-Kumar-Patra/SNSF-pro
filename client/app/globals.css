@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Righteous strictly for special headers if needed */
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
+
+html {
+  height: auto;
+  overflow-y: visible;   /* VERY IMPORTANT */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-y: auto;      /* window regains scroll */
+  overflow-x: hidden;
+  background: #ffffff;
+}
+
+
+/* Custom Class for Righteous Font */
+.righteous {
+  font-family: 'Righteous', sans-serif;
+}
+
+/* --- Utilities & Resets --- */
+
+/* Remove number spinners */
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Horizontal Scrollbar Styling */
+.horizontal-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;        /* slate-50 */
+  border-radius: 999px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: #94a3b8;        /* slate-400 */
+  border-radius: 999px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;        /* slate-500 */
+}
+
+/* --- Animations --- */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out both;
+  }
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Extra Keyframes */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0%); }
+}
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-100%); }
+}
+
+/* Skeleton Wave Animation */
+@keyframes mui-skeleton-wave {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+.MuiSkeleton-wave::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: mui-skeleton-wave 1.6s linear 0.5s infinite;
+}
+
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+}
+
+
+
+
+@layer components {
+ .section-title {
+  @apply font-heading font-semibold text-[20px] leading-6 md:text-[26px] md:leading-[30px] text-slate-900;
+}
+
+
+  .card-title {
+    @apply  text-[16px] sm:text-[14px] xl:text-[16px]
+        font-normal
+        text-gray-900
+  }
+
+  .link-text {
+    @apply font-medium text-[14px] leading-5 text-slate-600 hover:text-slate-900 transition-colors;
+  }
+
+  .text {
+    @apply font-normal text-[14px] leading-5 text-slate-600;
+  }
+}

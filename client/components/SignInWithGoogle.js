@@ -1,0 +1,45 @@
+import React from "react";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { useAuth } from "@/app/context/AuthContext";
+import { useAlert } from "@/app/context/AlertContext";
+import { useRouter } from "next/navigation";
+
+const SignInWithGoogle = () => {
+  const router = useRouter();
+  const alert = useAlert();
+  const { isLogin, login, setIsLogin, isCheckingToken, setIsCheckingToken } =
+    useAuth();
+
+  return (
+    <div className="">
+      <GoogleLogin
+        onSuccess={async (cred) => {
+          try {
+            const res = await axios.post(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/user/authWithGoogle`,
+              { token: cred.credential },
+              { withCredentials: true }
+            );
+
+            if (res.data.success) {
+              alert.alertBox({
+                type: "success",
+                msg: "Logged in successfully",
+              });
+
+              router.push("/profile");
+
+              const { accessToken, refreshToken, user } = res.data;
+              login(user, accessToken);
+              localStorage.setItem("refreshToken", refreshToken);
+            }
+          } catch (err) {
+            alert.alertBox({ type: "error", msg: "Login failed" });
+          }
+        }}
+      />
+    </div>
+  );
+};
+export default SignInWithGoogle;
