@@ -84,7 +84,7 @@ const welcomeEmail = (
       New Burupada, Near Hanuman Temple, Via-Hinjilicut, Ganjam, Odisha – 761146
     </p>
     <p style="margin:6px 0 0;">
-      📞 +91 9776501230 | ✉️ support@snsteelfabrication.com
+      📞 {process.env.NEXT_PUBLIC_CONTACT_PHONE} | ✉️ support@snsteelfabrication.com
     </p>
     <p style="margin-top:14px;font-size:11px;color:#9ca3af;">
       You’re receiving this email because you created an account with us.

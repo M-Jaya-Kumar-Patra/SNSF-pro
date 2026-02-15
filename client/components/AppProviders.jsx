@@ -8,6 +8,8 @@ import { ItemProvider } from "@/app/context/ItemContext";
 import { CatProvider } from "@/app/context/CategoryContext";
 import { WishlistProvider } from "@/app/context/WishlistContext";
 import { PrdProvider } from "@/app/context/ProductContext";
+import { CartProvider } from "@/app/context/CartContext";
+import { OrdersProvider } from "@/app/context/OrdersContext";
 
 export default function AppProviders({ children }) {
   return (
@@ -17,11 +19,15 @@ export default function AppProviders({ children }) {
           <NoticeProviders>
             <ItemProvider>
               <CatProvider>
+              <CartProvider>
                 <WishlistProvider>
+                  <OrdersProvider>
                   <PrdProvider>
                     {children}
                   </PrdProvider>
+                  </OrdersProvider>
                 </WishlistProvider>
+                </CartProvider>
               </CatProvider>
             </ItemProvider>
           </NoticeProviders>

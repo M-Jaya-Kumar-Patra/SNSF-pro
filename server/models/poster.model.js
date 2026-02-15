@@ -25,7 +25,8 @@ const posterManagerSchema = new mongoose.Schema({
     dateCreated: {
         type: Date,
         default: Date.now
-    }
+    },
+
 }, { timestamps: true });
 
 const PosterModel = mongoose.models.Poster || mongoose.model("Poster", posterManagerSchema);

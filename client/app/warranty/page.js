@@ -82,7 +82,7 @@ export default function WarrantyPage() {
           <p><strong>S N Steel Fabrication</strong></p>
           <p>New Burupada, Near Hanuman Temple</p>
           <p>Via - Hinjilicut, Ganjam, Odisha - 761102</p>
-          <p>Phone: +91 9776501230</p>
+          <p>Phone: {process.env.NEXT_PUBLIC_CONTACT_PHONE}</p>
           <p>Email: <a href="mailto:support@snsteelfabrication.com" className="text-blue-600 underline">support@snsteelfabrication.com</a></p>
         </address>
       </section>

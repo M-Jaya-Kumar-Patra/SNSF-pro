@@ -13,7 +13,7 @@ const Footer = () => {
   const [ready, setReady] = useState(false);
 
   const handleTelClick = () => {
-    window.location.href = "tel:+919776501230";
+    window.location.href = `tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE}`;
   };
 
   const getOptimizedCloudinaryUrl = (url) => {
@@ -113,10 +113,11 @@ const Footer = () => {
                 />
               </a>
               <a
-                href="https://wa.me/919776501230"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}`}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+
                 <Image
                   src={getOptimizedCloudinaryUrl("/images/whatsapp.png")}
                   width={30}

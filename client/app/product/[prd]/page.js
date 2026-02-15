@@ -113,6 +113,9 @@ export async function generateMetadata({ params }) {
     );
   }
 
+
+
+
   return {
     title: `${name} – ${brand || "SNSF"}`,
     description: productDescription,

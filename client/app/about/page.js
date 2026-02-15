@@ -141,7 +141,7 @@ export default function AboutUsPage() {
           </p>
           <p>New Burupada, Near Hanuman Temple</p>
           <p>Via - Hinjilicut, Ganjam, Odisha - 761102</p>
-          <p>Phone: +91 9776501230</p>
+          <p>Phone: {process.env.NEXT_PUBLIC_CONTACT_PHONE}</p>
           <p>
             Email:{" "}
             <a

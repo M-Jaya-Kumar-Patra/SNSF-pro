@@ -55,7 +55,7 @@ const refundCompletedEmail = (
     <!-- Footer -->
     <div style="background-color: #f8fafc; padding: 20px; font-size: 12px; color: #64748b; text-align: center;">
       📍 S N Steel Fabrication, New Burupada, Near Hanuman Temple, Via-Hinjilicut, Ganjam, Odisha - 761146<br/>
-      📞 +91 9776501230 | ✉️ support@snsteelfabrication.com<br/><br/>
+      📞 {process.env.NEXT_PUBLIC_CONTACT_PHONE} | ✉️ support@snsteelfabrication.com<br/><br/>
       You’re receiving this email because you made a purchase on our website.
     </div>
   </div>

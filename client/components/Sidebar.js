@@ -122,25 +122,39 @@ const ProductListing = () => {
                   {/* Hover CTA */}
                   <div className="absolute left-0 top-full w-full z-50 pointer-events-none opacity-0 sm:group-hover:opacity-100 sm:group-hover:pointer-events-auto transition-opacity duration-300">
                     <div className="bg-white shadow-lg p-2 flex gap-2 justify-between">
-                      <Button
-                        variant="outlined"
-                        className="!text-blue-900 !border-blue-900 w-1/2"
-                        onClick={async () => {
-                          if (!isLogin) return router.push("/login");
-                          await postData("/api/enquiries/", {
-                            userId: userData._id,
-                            name: userData.name,
-                            email: userData.email,
-                            phone: userData.phone,
-                            productId: prd._id,
-                            message: `Whatsapp Enquiry: ${prd.name}`,
-                            image: prd.images[0],
-                          });
-                          window.open(`https://wa.me/919776501230?text=Hi, I'm interested in *${prd.name}*`, "_blank");
-                        }}
-                      >
-                        <WhatsappIcon className="w-5 h-5" /> WhatsApp
-                      </Button>
+                     <Button
+  variant="outlined"
+  className="!text-blue-900 !border-blue-900 w-1/2"
+  onClick={async () => {
+    if (!isLogin) return router.push("/login");
+
+    try {
+      await postData("/api/enquiries/", {
+        userId: userData?._id,
+        name: userData?.name,
+        email: userData?.email,
+        phone: userData?.phone,
+        productId: prd?._id,
+        message: `Whatsapp Enquiry: ${prd?.name}`,
+        image: prd?.images?.[0],
+      });
+
+      const message = `Hi, I'm interested in *${prd?.name}*`;
+      const encodedMessage = encodeURIComponent(message);
+
+      window.open(
+        `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}?text=${encodedMessage}`,
+        "_blank"
+      );
+    } catch (err) {
+      console.error("WhatsApp enquiry failed:", err);
+    }
+  }}
+>
+  <WhatsappIcon className="w-5 h-5 mr-1" />
+  WhatsApp
+</Button>
+
                       <Button
                         variant="contained"
                         className="!bg-rose-600 hover:!bg-rose-700 w-1/2"
@@ -157,7 +171,7 @@ const ProductListing = () => {
                             message: `Call Enquiry: ${prd.name}`,
                             image: prd.images[0],
                           });
-                          window.open("tel:+919776501230");
+                          window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE}`);
                         }}
                       >
                         <IoCall className="w-5 h-5" /> Call

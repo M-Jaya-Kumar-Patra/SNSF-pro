@@ -323,3 +323,20 @@ export const uploadVideoToCloud = async (url, formData, authRequired = true) => 
     return { error: true, message: error.message };
   }
 };
+export const deleteData = async (url) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await axios.delete(apiUrl + url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }, // ✅ this is how axios sends a body with DELETE
+    });
+
+    return response;
+  } catch (error) {
+    console.error("deleteItem error:", error);
+    throw error;
+  }
+};

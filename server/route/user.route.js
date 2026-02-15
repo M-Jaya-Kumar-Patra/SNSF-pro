@@ -3,7 +3,10 @@ import { Router } from "express";
 import { registerUserController, verifyEmailController, authWithGoogle, loginController, logoutController, userAvatarController, removeImageFromCloudinary, updateUserDetails, forgotPasswordController, verifyForgotPasswordOtp, resetPassword, refreshToken, userDetails, changePassword, addAddress , getUserAddress, deleteAddress, updateUserAddress, resendOTP, setPassword,
      getRelatedProductsByCategory, getAllUsers   , getCurrentlyLoggedInUsers,
   getLoggedOutUsers,
-  getLoginMethodStats,  
+  getLoginMethodStats, addToCartController,
+  getCartController,
+  removeFromCartController,
+  updateCartQtyController
 } from "../controllers/user.controller.js";
 
 import { getMostActiveUsers } from "../controllers/loginAnalytics.controller.js";
@@ -49,6 +52,10 @@ userRouter.get("/analytics/logged-out-users", getLoggedOutUsers);
 userRouter.get("/analytics/login-methods", getLoginMethodStats);
 
 
+userRouter.post("/cart/add", auth, addToCartController);
+userRouter.get("/cart/get", auth, getCartController);
+userRouter.post("/cart/remove", auth, removeFromCartController);
+userRouter.post("/cart/update-qty", auth, updateCartQtyController);
 
 
 export default userRouter;

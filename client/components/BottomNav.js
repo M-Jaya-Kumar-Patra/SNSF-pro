@@ -62,7 +62,7 @@
         router.push('/notifications');
         break;
       case 'support':
-        window.location.href = 'tel:+919776501230';
+        window.location.href = `tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE}`;
         break;
       default:
         break;

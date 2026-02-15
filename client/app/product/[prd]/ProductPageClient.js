@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { fetchDataFromApi, postData } from "@/utils/api";
+import { fetchDataFromApi, postData} from "@/utils/api";
 import { Button } from "@mui/material";
 import Similar from "./Similar";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import { MdFavorite, MdFavoriteBorder, MdStars } from "react-icons/md";
 import Image from "next/image";
 import { useWishlist } from "@/app/context/WishlistContext";
 import ProductSpecs from "@/components/ProductSpecs";
@@ -26,8 +26,14 @@ import { PiShareFat } from "react-icons/pi";
 import Suggestions from "@/components/Suggestions";
 import { trackProductEvent } from "@/lib/tracking";
 import { usePrd } from "@/app/context/ProductContext";
+import { MdStar } from "react-icons/md";
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import { useCart } from "@/app/context/CartContext";
+
 
 import "swiper/css/zoom";
+import Reviews from "./Reviews";
+import Pincode from "./Pincode";
 
 const ProductPageClient = ({ prdId }) => {
   const [productImages, setProductImages] = useState([]);
@@ -42,6 +48,9 @@ const ProductPageClient = ({ prdId }) => {
   const [hideArrows, setHideArrows] = useState(null);
 
   const router = useRouter();
+
+  const { cartData, addToCart, buyNowItem, setBuyNowItem } = useCart();
+
 
   useEffect(() => {
     fetchDataFromApi(`/api/product/${prdId}`, false).then((res) => {
@@ -123,6 +132,29 @@ const ProductPageClient = ({ prdId }) => {
     if (!url?.includes("res.cloudinary.com")) return url;
     return url.replace("/upload/", "/upload/w_800,h_800,c_fit,f_auto,q_90/");
   };
+
+  const addToCartFun = async (prd, userId, quantity) => {
+  try {
+    const added = await addToCart(prd, userId, quantity);
+
+    if (added?.success) {
+      setUserData((prev) => ({
+        ...prev,
+        shopping_cart: [
+          ...(prev?.shopping_cart || []),
+          String(prd._id),
+        ],
+      }));
+    }
+  } catch (err) {
+    console.error("Error adding to cart", err);
+  }
+};
+
+
+const isInCart = cartData?.some(
+  (item) => item?.productId?._id === openedProduct?._id
+);
 
   if (isCheckingToken || !openedProduct) {
     return (
@@ -515,75 +547,81 @@ const ProductPageClient = ({ prdId }) => {
             {openedProduct?.brand}
           </h2>
 
+                {/* Rating */}
+{openedProduct?.rating && (
+  <div
+    className={`flex justify-center items-center gap-[2px] text-white text-sm font-semibold px-[6px] w-[50px] h-[23px] rounded ${
+      openedProduct?.rating > 4.5
+        ? "bg-green-600"
+        : openedProduct?.rating > 3.5
+        ? "bg-green-500"
+        : openedProduct?.rating > 2.5
+        ? "bg-amber-500"
+        : openedProduct?.rating < 1.5
+        ? "bg-orange-500"
+        : "bg-red-500"
+    }`}
+  >
+    {parseFloat(openedProduct?.rating).toFixed(1)} <MdStars />
+  </div>
+)}
+
+          {/* Price Section */}
+<div className="flex items-center gap-3 mt-4">
+  <div className="text-[22px] font-semibold text-black flex items-center">
+    <FaIndianRupeeSign className="mr-1" />
+    {openedProduct?.price}
+  </div>
+
+  {openedProduct?.oldPrice && (
+    <div className="line-through text-gray-500 text-[16px]">
+      ₹{openedProduct?.oldPrice}
+    </div>
+  )}
+
+  {openedProduct?.discount && (
+    <div className="text-green-700 text-[16px] font-medium">
+      {openedProduct?.discount}% off
+    </div>
+  )}
+</div>
+
+
           {!hideArrows && (
             <>
-              <div className=" flex justify-around my-2 mt-10 gap-2">
-                <Button
-                  variant="outlined"
-                  className="!capitalize !text-slate-900 !border-slate-900 bg-gray-600 rounded-md px-1 py-1 text-base w-auto sm:!w-1/2 !text-nowrap flex items-center gap-2"
-                  onClick={async () => {
-                    if (!isLogin) {
-                      router.push("/login");
-                    } else {
-                      try {
-                        await postData("/api/enquiries/", {
-                          userId: userData?._id,
-                          contactInfo: {
-                            name: userData?.name,
-                            email: userData?.email,
-                            phone: userData?.phone,
-                          },
-                          productId: openedProduct?._id,
-                          message: `Customer opened WhatsApp for "${openedProduct?.name}"`,
-                          userMsg: `Enquiry for ${openedProduct?.name} via WhatsApp`,
-                          image: openedProduct?.images?.[0],
-                        });
+              <div className="flex gap-3 mt-6">
+  
 
-                        const whatsappURL = `https://wa.me/919776501230?text=Hi, I'm interested in *${openedProduct?.name}*.\nHere is the product link:\nhttps://snsteelfabrication.com/product/${openedProduct?._id}`;
-                        window.open(whatsappURL, "_blank");
-                      } catch (err) {
-                        console.error("Enquiry failed:", err);
-                      }
-                    }
-                  }}
-                >
-                  <WhatsappIcon className="!w-5 !h-5" />
-                  <span className="hidden sm:block">Get Price on WhatsApp</span>
-                </Button>
+<Button
+  variant="outlined"
+  className="!border-black !text-black w-1/2"
+  onClick={() => {
+    if (!isLogin) {
+      router.push("/login");
+    } else {
+      if (isInCart) {
+        router.push("/cart");
+      } else {
+        addToCartFun(openedProduct, userData?._id, quantity);
+      }
+    }
+  }}
+>
+  {isInCart ? "Go to Cart" : "Add to Cart"}
+</Button>
 
-                <Button
-                  variant="contained"
-                  className="!capitalize !bg-rose-600 hover:!bg-rose-700 text-white rounded-md px-2 py-1 text-base w-full
-   sm:w-1/2 text-nowrap flex items-center gap-2"
-                  onClick={async () => {
-                    if (!isLogin) {
-                      router.push("/login");
-                    } else {
-                      try {
-                        await postData("/api/enquiries/", {
-                          userId: userData?._id,
-                          contactInfo: {
-                            name: userData?.name,
-                            email: userData?.email,
-                            phone: userData?.phone,
-                          },
-                          productId: openedProduct?._id,
-                          message: `Direct call initiated for "${openedProduct?.name}"`,
-                          userMsg: `Enquiry for ${openedProduct?.name} via Call`,
-                          image: openedProduct?.images[0],
-                        });
+  <Button
+    variant="contained"
+    className="!bg-rose-600 hover:!bg-rose-700 text-white w-1/2"
+    onClick={() => {
+      setBuyNowItem({ ...openedProduct, quantity });
+      router.push("/checkOut");
+    }}
+  >
+    Buy Now
+  </Button>
+</div>
 
-                        window.open("tel:+919776501230");
-                      } catch (err) {
-                        console.error("Call log failed:", err);
-                      }
-                    }
-                  }}
-                >
-                  <IoCall className="w-6 h-6 mx-2" />
-                  <span>Call to Get Best Price</span>
-                </Button>
-              </div>
             </>
           )}
 
@@ -595,8 +633,22 @@ const ProductPageClient = ({ prdId }) => {
             </div>
           )}
 
+
+{!showLarge && 
+           <Pincode productId={prdId} />}
+
           {/* Product Specs */}
           <ProductSpecs specs={openedProduct?.specifications} />
+
+         
+
+
+          <Reviews productId={prdId} />
+
+
+
+    
+
         </div>
       </div>
 

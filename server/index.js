@@ -27,6 +27,9 @@ import analyticsRouter from './route/analytics.route.js';
 import videoRouter from './route/video.route.js';
 import translateRoutes from "./route/translate.routes.js";
 import { startRecommendationCron } from "./cron/recommendation.cron.js";
+import paymentRouter from './route/payment.route.js';
+import orderRouter from "./route/order.route.js";
+
 
 
 
@@ -114,6 +117,11 @@ app.use("/api/analytics", analyticsRouter);
 app.use("/api/videos", videoRouter);
 
 app.use("/api/translate", translateRoutes);
+
+app.use("/api/payment", paymentRouter);
+
+app.use("/api/order", orderRouter);
+
 
 connectDB().then(() => {
   const port = process.env.PORT || 8000;

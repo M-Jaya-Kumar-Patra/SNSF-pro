@@ -15,6 +15,9 @@ import { trackVisitor } from "@/lib/tracking";
 
 import WhatsappIcon from "@/components/WhatsappIcon";
 import { IoCall } from "react-icons/io5";
+import { useCart } from "@/app/context/CartContext";
+
+
 
 const ProductListing = () => {
   const { prdData, productsData, setProductsData, getProductsData } = usePrd();
@@ -31,7 +34,8 @@ const ProductListing = () => {
   } = useAuth();
   const router = useRouter();
     const [data, setData] = useState([]);
-  
+  const { addToCart, cartData, setBuyNowItem } = useCart();
+
 
   useEffect(() => {
     setLoading(false);
@@ -77,6 +81,11 @@ const ProductListing = () => {
     if (!url?.includes("res.cloudinary.com")) return url;
     return url.replace("/upload/", "/upload/w_800,h_800,c_fit,f_auto,q_90/");
   };
+const isInCart = (prdId) =>
+  cartData?.some(
+    (item) => item?.productId?._id === prdId
+  );
+
 
   return (
     <div className="w-full bg-slate-100 ">
@@ -190,6 +199,18 @@ const ProductListing = () => {
                                 >
                                   {prd?.product?.brand || "--- Not mentioned ---"}
                                 </h1>
+                                <div className="flex items-center gap-2 mt-1">
+  <span className="text-slate-800 font-semibold text-[16px]">
+    ₹{prd?.product?.price}
+  </span>
+
+  {prd?.product?.oldPrice && (
+    <span className="text-slate-500 text-sm line-through">
+      ₹{prd?.product?.oldPrice}
+    </span>
+  )}
+</div>
+
                               </div>
                             </div>
                           </div>
@@ -199,74 +220,58 @@ const ProductListing = () => {
                           className="absolute left-0 top-full w-full z-50  pointer-events-none opacity-0 sm:group-hover:opacity-100 
           sm:group-hover:pointer-events-auto transition-opacity duration-300 sm:group-hover:shadow-[rgba(0,0,0,0.3)] sm:group-hover:shadow-xl"
                         >
-                          <div className="bg-white sm:shadow-lg p-2 flex gap-2 justify-center sm:justify-between flex-wrap">
-                            {/* WhatsApp Button */}
-                            <Button
-                              variant="outlined"
-                              className="!capitalize !text-slate-900 !border-slate-900 bg-gray-600 rounded-md px-3 py-[6px] text-sm sm:text-base w-[48%] flex items-center justify-center gap-2"
-                              onClick={async () => {
-                                if (!isLogin) {
-                                  router.push("/login");
-                                } else {
-                                  try {
-                                    await postData("/api/enquiries/", {
-                                      userId: userData?._id,
-                                      contactInfo: {
-                                        name: userData?.name,
-                                        email: userData?.email,
-                                        phone: userData?.phone,
-                                      },
-                                      productId: prd?._id,
-                                      message: `Customer opened WhatsApp for "${prd?.name}"`,
-                                      userMsg: `Enquiry for ${prd?.name} via WhatsApp`,
-                                      image: prd?.images[0],
-                                    });
+                          <div className="bg-white shadow-lg p-3 flex flex-col gap-3 border-t">
 
-                                    const whatsappURL = `https://wa.me/919776501230?text=Hi, I'm interested in *${prd?.name}*.\nHere is the product link:\nhttps://snsteelfabrication.com/product/${prd?._id}`;
+    {/* PRICE */}
+  
 
-                                    window.open(whatsappURL, "_blank");
-                                  } catch (err) {
-                                    console.error("Enquiry failed:", err);
-                                  }
-                                }
-                              }}
-                            >
-                              <WhatsappIcon className="w-5 h-5" />
-                              <span className="hidden sm:inline">WhatsApp</span>
-                            </Button>
+    {/* BUTTONS */}
+    <div className="flex gap-2">
+      <Button
+        variant="outlined"
+        fullWidth
+        sx={{
+          borderColor: "#0f172a",
+          color: "#0f172a",
+          fontWeight: 500,
+          "&:hover": {
+            borderColor: "#1e293b",
+            backgroundColor: "#f8fafc",
+          },
+        }}
+        onClick={async () => {
+          if (!isLogin) return router.push("/login");
 
-                            {/* Call Button */}
-                            <Button
-                              variant="contained"
-                              className="!capitalize !bg-rose-600 hover:!bg-rose-700 text-white rounded-md px-3 py-[6px] text-sm sm:text-base w-[48%] flex items-center justify-center gap-2"
-                              onClick={async () => {
-                                if (!isLogin) {
-                                  router.push("/login");
-                                } else {
-                                  try {
-                                    await postData("/api/enquiries/", {
-                                      userId: userData?._id,
-                                      name: userData?.name,
-                                      email: userData?.email,
-                                      phone: userData?.phone,
-                                      productId: prd?.product?._id,
-                                      message: `Direct call initiated for "${prd?.product?.name}"`,
-                                      userMsg: `Enquiry for ${prd?.product?.name} via Call`,
-                                      image: prd?.product?.images[0],
-                                    });
+          if (isInCart(prd._id)) {
+            router.push("/cart");
+          } else {
+            await addToCart(prd, userData?._id, 1);
+          }
+        }}
+      >
+        {isInCart(prd._id) ? "Go to Cart" : "Add to Cart"}
+      </Button>
 
-                                    window.open("tel:+919776501230");
-                                  } catch (err) {
-                                    console.error("Enquiry failed:", err);
-                                  }
-                                }
-                              }}
-                            >
-                              <IoCall className="w-5 h-5" />
-                              <span className="hidden sm:inline">Call</span>
-                            </Button>
+      <Button
+        variant="contained"
+        fullWidth
+        sx={{
+          backgroundColor: "#e11d48",
+          fontWeight: 500,
+          "&:hover": {
+            backgroundColor: "#be123c",
+          },
+        }}
+        onClick={() => {
+          setBuyNowItem({ ...prd, quantity: 1 });
+          router.push("/checkOut");
+        }}
+      >
+        Buy Now
+      </Button>
+    </div>
+  </div>
                           </div>
-                        </div>
                       </div>
                     ))}
             </div>

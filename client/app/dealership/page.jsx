@@ -149,7 +149,7 @@ const DealershipPage = () => {
           {/* Footer */}
           <div className="text-center text-gray-500 text-sm mt-6">
             📍 New Burupada, Hinjilicut, Ganjam <br />
-            📞 9776501230 | 🌐 www.snsteelfabrication.com
+            📞 {process.env.NEXT_PUBLIC_CONTACT_PHONE} | 🌐 www.snsteelfabrication.com
           </div>
         </div>
       </div>

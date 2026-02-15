@@ -93,7 +93,23 @@ lastRecommendationSignature: {
 lastRecommendedProductIds: {
   type: [String],
   default: [],
-}
+},
+shopping_cart: {
+  type: [
+    {
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+    },
+  ],
+  default: [],
+},
+
 
 
 }, { timestamps: true });

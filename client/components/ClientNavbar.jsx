@@ -349,7 +349,7 @@ const clientNavbar = ({ fontClass, cartItems = [], minimized = false }) => {
                   </IconButton>
                   <IconButton
                     aria-label="Call"
-                    onClick={() => (window.location.href = "tel:+919776501230")}
+                    onClick={() => (window.location.href = `tel:${process.env.NEXT_PUBLIC_CONTACT_PHONE}`)}
                   >
                     <MdCall className="!text-[37px] text-white" />
                   </IconButton>
