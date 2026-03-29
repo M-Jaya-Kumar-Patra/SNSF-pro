@@ -196,6 +196,19 @@ const [successMessage, setSuccessMessage] = useState("");
     }
   ])
 
+  useEffect(() => {
+      if (!isLogin) {
+        setIsCheckingToken(false);
+        router.replace("/login");
+      } else {
+        setFormFields({
+          name: userData?.name || "",
+          email: userData?.email || "",
+          phone: userData?.phone || "",
+        });
+      }
+    }, [userData, router]);
+
 
 
 
